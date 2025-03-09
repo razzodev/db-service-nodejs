@@ -13,8 +13,8 @@ app.use(express.json());
 
 async function startServer() {
     try {
-        await mongodb.connectToDatabase('app');
-        app.use('/users', usersRoutes);
+        // await mongodb.connectToDatabase('app');
+        // app.use('/users', usersRoutes);
         app.get('/', (req: Request, res: Response) => {
             res.json('Hello, World!');
         })
@@ -22,11 +22,11 @@ async function startServer() {
             console.log(`Server listening on port ${PORT}`);
         });
 
-        process.on('SIGINT', async () => {
-            console.log('Closing mongodbDB connection...');
-            await mongodb.closeDatabaseConnection();
-            process.exit();
-        });
+        // process.on('SIGINT', async () => {
+        //     console.log('Closing mongodbDB connection...');
+        //     await mongodb.closeDatabaseConnection();
+        //     process.exit();
+        // });
 
     } catch (error) {
         console.error('Failed to start server:', error);
