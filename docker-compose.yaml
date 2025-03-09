@@ -21,7 +21,7 @@ services:
     node-app:
         build: .
         ports:
-            - 40001:4000
+            - 4000:4000
         depends_on:
             - mymongodb
 volumes:
