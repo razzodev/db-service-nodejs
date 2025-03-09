@@ -12,8 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = default_1;
 require("./config");
 const express_1 = __importDefault(require("express"));
+const serverless_http_1 = __importDefault(require("serverless-http"));
 const db_1 = require("./features/db");
 const users_routes_1 = __importDefault(require("./features/users/users.routes"));
 const app = (0, express_1.default)();
@@ -42,3 +44,9 @@ function startServer() {
     });
 }
 startServer();
+const handler = (0, serverless_http_1.default)(app);
+function default_1(event, context) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return handler(event, context);
+    });
+}
