@@ -1,17 +1,15 @@
 {
-    "schema": "https://openapi.vercel.sh/vercel.json",
     "version": 2,
     "builds": [
         {
             "src": "api/index.cjs",
-            "use": "@vercel/node",
-            "buildCommmand": "npm run build:vercel"
+            "use": "@vercel/node"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/dist/api/$1"
+            "dest": "/api/$1"
         }
     ]
 }
