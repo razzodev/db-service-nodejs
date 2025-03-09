@@ -1,9 +1,12 @@
 import './config';
 import express, { Request, Response } from 'express';
+import serverless from 'serverless-http';
 import { mongodb } from './features/db';
 import usersRoutes from './features/users/users.routes';
+import { VercelRequest } from '@vercel/node';
 
 const app = express();
+
 const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
@@ -31,3 +34,10 @@ async function startServer() {
 }
 
 startServer()
+
+
+const handler = serverless(app);
+
+export default async function (event: VercelRequest, context: any) {
+    return handler(event, context);
+}
