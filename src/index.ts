@@ -12,8 +12,6 @@ app.use(express.json());
 
 async function startServer() {
     try {
-        await mongodb.connectToDatabase(process.env.MONGO_DB_NAME || '');
-
         app.use('/users', usersRoutes);
 
         app.get('/', async (req: Request, res: Response) => {
