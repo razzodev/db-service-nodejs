@@ -33,14 +33,17 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = loadEnvs;
 const dotenv = __importStar(require("dotenv"));
-const isProduction = process.env.NODE_ENV === 'production';
-// Load environment variables based on environment
-if (isProduction) {
-    dotenv.config({ path: '.env.production' }); // Load .env.production
-    console.log('Running in production mode.');
-}
-else {
-    dotenv.config({ path: '.env.local' }); // Load .env.local
-    console.log('Running in development mode.');
+function loadEnvs() {
+    const isProduction = process.env.NODE_ENV === 'production';
+    // Load environment variables based on environment
+    if (isProduction) {
+        dotenv.config({ path: '.env.production' }); // Load .env.production
+        console.log('Running in production mode.');
+    }
+    else {
+        dotenv.config({ path: '.env.local' }); // Load .env.local
+        console.log('Running in development mode.');
+    }
 }
