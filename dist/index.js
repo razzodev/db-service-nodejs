@@ -12,21 +12,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("./config");
+const config_1 = __importDefault(require("./config"));
+config_1.default.loadEnvs();
 const express_1 = __importDefault(require("express"));
 const db_1 = require("./features/db");
-const users_routes_1 = __importDefault(require("./features/users/users.routes"));
+const features_1 = require("./features");
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 4000;
 app.use(express_1.default.json());
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield db_1.mongodb.connectToDatabase('app');
-            app.use('/users', users_routes_1.default);
-            app.get('/', (req, res) => {
+            const appRoutes = yield (0, features_1.initializeFeatures)();
+            app.use('/users/mongodb', appRoutes.mongoUserRoutes);
+            app.use('/users/d1', appRoutes.d1UserRoutes);
+            app.get('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
                 res.json('Hello, World!');
-            });
+            }));
             app.listen(PORT, () => {
                 console.log(`Server listening on port ${PORT}`);
             });
