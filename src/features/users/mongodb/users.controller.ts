@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { mongodb } from '../../db/'
+import { mongodb } from '../../../services/db'
 import { IUser } from './types';
 import { ObjectId } from 'mongodb'
 import MongoUsersService from './users.service';

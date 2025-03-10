@@ -11,7 +11,10 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
-let db: Db;
+
+function getClient(): MongoClient {
+    return client;
+}
 
 export async function connectToDatabase(databaseName: string = ''): Promise<Db> {
     try {
@@ -25,6 +28,7 @@ export async function connectToDatabase(databaseName: string = ''): Promise<Db> 
     }
 }
 
+let db: Db;
 export function getDb(): Db {
     if (!db) {
         throw new Error('Database connection not initialized. Call connectToDatabase() first.');
@@ -45,5 +49,6 @@ const mongodb = {
     connectToDatabase,
     getDb,
     closeDatabaseConnection,
+    getClient
 };
 export default mongodb

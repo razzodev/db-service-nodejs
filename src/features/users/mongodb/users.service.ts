@@ -1,5 +1,5 @@
 import { Db } from 'mongodb';
-import { mongodb } from '../../db/'
+import { mongodb } from '../../../services/db'
 import { MongoUserServiceType, IUser, ObjectId } from './types';
 export default class MongoUsersService implements MongoUserServiceType {
     // private db: Db | undefined;

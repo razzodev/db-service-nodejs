@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.setupMongoDatabasesRoutes = exports.MongoDatabaseController = exports.MongoDatabaseService = exports.mongodb = void 0;
+var db_1 = require("../../../services/db");
+Object.defineProperty(exports, "mongodb", { enumerable: true, get: function () { return db_1.mongodb; } });
+var databases_service_1 = require("./databases.service");
+Object.defineProperty(exports, "MongoDatabaseService", { enumerable: true, get: function () { return databases_service_1.MongoDatabaseService; } });
+var databases_controller_1 = require("./databases.controller");
+Object.defineProperty(exports, "MongoDatabaseController", { enumerable: true, get: function () { return databases_controller_1.MongoDatabaseController; } });
+var databases_routes_1 = require("./databases.routes");
+Object.defineProperty(exports, "setupMongoDatabasesRoutes", { enumerable: true, get: function () { return databases_routes_1.setupMongoDatabasesRoutes; } });

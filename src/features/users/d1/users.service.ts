@@ -1,4 +1,4 @@
-import { d1 } from '../../db/'
+import { d1 } from '../../../services/db'
 import { D1User, D1UserServiceType } from './types';
 
 export default class D1UsersService implements D1UserServiceType {

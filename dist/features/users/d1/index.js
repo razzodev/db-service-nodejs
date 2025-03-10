@@ -10,5 +10,5 @@ var users_controller_1 = require("./users.controller");
 Object.defineProperty(exports, "D1UsersController", { enumerable: true, get: function () { return __importDefault(users_controller_1).default; } });
 var users_routes_1 = require("./users.routes");
 Object.defineProperty(exports, "setupD1Routes", { enumerable: true, get: function () { return users_routes_1.setupD1Routes; } });
-var db_1 = require("../../db");
+var db_1 = require("../../../services/db");
 Object.defineProperty(exports, "d1", { enumerable: true, get: function () { return db_1.d1; } });

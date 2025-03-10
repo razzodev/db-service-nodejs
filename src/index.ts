@@ -2,8 +2,9 @@ import config from './config';
 config.loadEnvs();
 
 import express, { Request, Response } from 'express';
-import { mongodb, d1 } from './features/db';
+import { mongodb, d1 } from './services/db';
 import { initializeFeatures } from './features'
+import { authMiddleware } from './commons/middleware';
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -14,8 +15,12 @@ async function startServer() {
     try {
 
         const appRoutes = await initializeFeatures();
+        app.use(authMiddleware);
         app.use('/users/mongodb', appRoutes.mongoUserRoutes);
         app.use('/users/d1', appRoutes.d1UserRoutes);
+
+        app.use('/mongodb', appRoutes.mongoDatabasesRoutes);
+        app.use('/d1', appRoutes.d1DatabasesRoutes);
 
         app.get('/', async (req: Request, res: Response) => {
             res.json('Hello, World!');
