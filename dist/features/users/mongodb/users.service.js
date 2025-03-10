@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const db_1 = require("../../db/");
+const db_1 = require("../../../services/db");
 const types_1 = require("./types");
 class MongoUsersService {
     constructor(db) {

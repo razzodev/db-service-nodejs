@@ -15,8 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("./config"));
 config_1.default.loadEnvs();
 const express_1 = __importDefault(require("express"));
-const db_1 = require("./features/db");
+const db_1 = require("./services/db");
 const features_1 = require("./features");
+const middleware_1 = require("./commons/middleware");
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 4000;
 app.use(express_1.default.json());
@@ -24,8 +25,11 @@ function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const appRoutes = yield (0, features_1.initializeFeatures)();
+            app.use(middleware_1.authMiddleware);
             app.use('/users/mongodb', appRoutes.mongoUserRoutes);
             app.use('/users/d1', appRoutes.d1UserRoutes);
+            app.use('/mongodb', appRoutes.mongoDatabasesRoutes);
+            app.use('/d1', appRoutes.d1DatabasesRoutes);
             app.get('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
                 res.json('Hello, World!');
             }));
