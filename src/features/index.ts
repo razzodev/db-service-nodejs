@@ -1,6 +1,6 @@
 import { MongoUsersService, MongoUsersController, setupMongoRoutes } from './users/mongodb'
 import { D1UsersService, D1UsersController, setupD1Routes, d1 } from './users/d1'
-import { mongodb } from './db';
+import { mongodb } from '../services/db';
 
 async function initializeFeatures() {
     await mongodb.connectToDatabase(process.env.MONGO_DB_NAME || '');

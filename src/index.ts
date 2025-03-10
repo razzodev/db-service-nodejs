@@ -2,7 +2,7 @@ import config from './config';
 config.loadEnvs();
 
 import express, { Request, Response } from 'express';
-import { mongodb, d1 } from './features/db';
+import { mongodb, d1 } from './services/db';
 import { initializeFeatures } from './features'
 const app = express();
 const PORT = process.env.PORT || 4000;
