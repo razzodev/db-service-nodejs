@@ -1,6 +1,8 @@
-import './config';
+import config from './config';
+config.loadEnvs();
+
 import express, { Request, Response } from 'express';
-import { mongodb } from './features/db';
+import { mongodb, d1 } from './features/db';
 import usersRoutes from './features/users/users.routes';
 
 const app = express();
@@ -10,11 +12,14 @@ app.use(express.json());
 
 async function startServer() {
     try {
-        await mongodb.connectToDatabase('app');
+        await mongodb.connectToDatabase(process.env.MONGO_DB_NAME || '');
+
         app.use('/users', usersRoutes);
-        app.get('/', (req: Request, res: Response) => {
+
+        app.get('/', async (req: Request, res: Response) => {
             res.json('Hello, World!');
         })
+
         app.listen(PORT, () => {
             console.log(`Server listening on port ${PORT}`);
         });
