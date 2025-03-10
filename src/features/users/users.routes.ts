@@ -1,13 +1,10 @@
-import { Router, Request, Response } from "express";
-import { mongodb } from '../db'
-import userController from './users.controller';
+import { Router } from "express";
+import mongoDbRoutes from './mongodb/users.routes';
+import d1Routes from './d1/users.routes';
 
 const router = Router();
 
-router.post('/add', userController.addUser);
-
-router.get('/', userController.getUsers);
-router.get('/:id', userController.getUserById);
-router.delete('/:id', userController.deleteUser);
+router.use('/d1', d1Routes);
+router.use('/mongodb', mongoDbRoutes);
 
 export default router
