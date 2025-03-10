@@ -1,14 +1,15 @@
 import { Router } from "express";
-import userController from './users.controller';
 import { validateParam } from '../../../commons/middleware/index';
-
-const { getMongoUsers, getMongoUserById, addMongoUser, deleteMongoUser } = userController
-const router = Router();
-
-router.get('/', getMongoUsers);
-router.get('/:id', validateParam(['id']), getMongoUserById);
-router.post('/add', addMongoUser);
-router.delete('/', deleteMongoUser);
+import MongoUsersController from './users.controller';
 
 
-export default router
+export function setupMongoRoutes(usersController: MongoUsersController) {
+    const router = Router();
+    router.get('/', usersController.getMongoUsers);
+    router.get('/:id', validateParam(['id']), usersController.getMongoUserById);
+    router.post('/add', usersController.addMongoUser);
+    router.delete('/', usersController.deleteMongoUser);
+    return router;
+}
+
+// export default router

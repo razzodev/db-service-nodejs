@@ -1,13 +1,15 @@
 import { Router, Request, Response } from "express";
-import userController from './users.controller';
+// import userController from './users.controller';
 import { validateParam } from '../../../commons/middleware/index';
-const { getD1Users, getD1UserById, addD1User, deleteD1User } = userController
+import MongoUsersController from './users.controller'
 
 const router = Router();
 
-router.get('/', getD1Users);
-router.get('/:id', validateParam(['id']), getD1UserById);
-router.post('/add', addD1User);
-router.delete('/', deleteD1User);
-
-export default router
+export function setupD1Routes(usersController: MongoUsersController) {
+    const router = Router();
+    router.get('/', usersController.getD1Users);
+    router.get('/:id', validateParam(['id']), usersController.getD1UserById);
+    router.post('/add', usersController.addD1User);
+    router.delete('/', usersController.deleteD1User);
+    return router;
+}

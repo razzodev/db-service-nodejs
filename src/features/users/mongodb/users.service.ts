@@ -2,11 +2,11 @@ import { Db } from 'mongodb';
 import { mongodb } from '../../db/'
 import { MongoUserServiceType, IUser, ObjectId } from './types';
 export default class MongoUsersService implements MongoUserServiceType {
-    private db: Db | undefined;
+    // private db: Db | undefined;
     private isConnected: boolean = false;
 
-    constructor(dbName: string) {
-        this.connect(dbName);
+    constructor(private db: Db) {
+
     }
 
     private async connect(dbName: string): Promise<void> {

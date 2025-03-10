@@ -3,16 +3,19 @@ config.loadEnvs();
 
 import express, { Request, Response } from 'express';
 import { mongodb, d1 } from './features/db';
-import usersRoutes from './features/users/users.routes';
-
+import { initializeFeatures } from './features'
 const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 
+
 async function startServer() {
     try {
-        app.use('/users', usersRoutes);
+
+        const appRoutes = await initializeFeatures();
+        app.use('/users/mongodb', appRoutes.mongoUserRoutes);
+        app.use('/users/d1', appRoutes.d1UserRoutes);
 
         app.get('/', async (req: Request, res: Response) => {
             res.json('Hello, World!');
