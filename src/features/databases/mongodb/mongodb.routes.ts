@@ -1,0 +1,22 @@
+// src/features/databases/mongodb/databases.routes.ts
+import express from 'express';
+import { MongoDatabaseController } from './mongodb.controller';
+
+const router = express.Router();
+
+export function setupMongoDatabasesRoutes(controller: MongoDatabaseController) {
+    router.post('/insertOne', controller.insertOne);
+    router.post('/insertMany', controller.insertMany);
+    router.post('/deleteOne', controller.deleteOne);
+    router.post('/updateOne', controller.updateOne);
+    router.post('/find', controller.find);
+    router.post('/createDatabase', controller.createDatabase);
+    router.delete('/deleteDatabase/:dbName', controller.deleteDatabase);
+    router.post('/createCollection', controller.createCollection);
+    router.delete('/deleteCollection/:dbName/:collectionName', controller.deleteCollection);
+    return router;
+}
+
+
+
+export default router;
