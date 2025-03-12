@@ -15,7 +15,7 @@ async function initializeFeatures() {
     const d1UsersController = new D1UsersController(d1UsersService);
     const d1UserRoutes = setupD1Routes(d1UsersController);
 
-    const mongoDatabasesService = new MongoDatabaseService(mongodb.getClient(), mongodb.getDb());
+    const mongoDatabasesService = new MongoDatabaseService(mongodb.client, mongodb.getDb());
     const mongoDatabasesController = new MongoDatabaseController(mongoDatabasesService);
     const mongoDatabasesRoutes = setupMongoDatabasesRoutes(mongoDatabasesController);
 

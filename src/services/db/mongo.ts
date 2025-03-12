@@ -4,7 +4,7 @@ import { MongoClient, Db, ServerApiVersion } from 'mongodb';
 
 export const uri = process.env.MONGODB_URI || 'mongodb://user:pass@localhost:27017/mydb'; // Replace with your connection string
 
-const client = new MongoClient(uri, {
+export const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
         strict: true,
@@ -12,9 +12,7 @@ const client = new MongoClient(uri, {
     }
 });
 
-function getClient(): MongoClient {
-    return client;
-}
+
 
 export async function connectToDatabase(databaseName: string = ''): Promise<Db> {
     try {
@@ -49,6 +47,6 @@ const mongodb = {
     connectToDatabase,
     getDb,
     closeDatabaseConnection,
-    getClient
+    client
 };
 export default mongodb
