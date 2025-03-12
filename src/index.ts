@@ -16,8 +16,6 @@ async function startServer() {
 
         const appRoutes = await initializeFeatures();
         app.use(authMiddleware);
-        app.use('/users/mongodb', appRoutes.mongoUserRoutes);
-        app.use('/users/d1', appRoutes.d1UserRoutes);
 
         app.use('/mongodb', appRoutes.mongoDatabasesRoutes);
         app.use('/d1', appRoutes.d1DatabasesRoutes);
