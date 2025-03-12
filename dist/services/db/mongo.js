@@ -10,28 +10,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uri = void 0;
+exports.client = exports.uri = void 0;
 exports.connectToDatabase = connectToDatabase;
 exports.getDb = getDb;
 exports.closeDatabaseConnection = closeDatabaseConnection;
 const mongodb_1 = require("mongodb");
-exports.uri = process.env.MONGODB_URI || 'mongodb://user:pass@localhost:27017/mydb'; // Replace with your connection string
-const client = new mongodb_1.MongoClient(exports.uri, {
+exports.uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/mydb'; // Replace with your connection string
+exports.client = new mongodb_1.MongoClient(exports.uri, {
     serverApi: {
         version: mongodb_1.ServerApiVersion.v1,
         strict: true,
         deprecationErrors: true,
     }
 });
-function getClient() {
-    return client;
-}
 function connectToDatabase() {
     return __awaiter(this, arguments, void 0, function* (databaseName = '') {
+        if (!databaseName) {
+            throw new Error("database name required");
+        }
         try {
-            yield client.connect();
-            db = client.db(databaseName);
-            console.log('Connected to MongoDB');
+            yield exports.client.connect();
+            db = exports.client.db(databaseName);
+            console.log(`Connected to MongoDB database: ${databaseName}`);
             return db;
         }
         catch (error) {
@@ -50,7 +50,7 @@ function getDb() {
 function closeDatabaseConnection() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield client.close();
+            yield exports.client.close();
             console.log("MongoDB connection closed");
         }
         catch (error) {
@@ -62,6 +62,6 @@ const mongodb = {
     connectToDatabase,
     getDb,
     closeDatabaseConnection,
-    getClient
+    client: exports.client
 };
 exports.default = mongodb;

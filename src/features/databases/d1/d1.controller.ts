@@ -2,12 +2,23 @@
 
 // src/features/databases/d1/databases.controller.ts
 import { Request, Response } from 'express';
-import { D1DatabaseService } from './databases.service';
+import { D1DatabaseService } from './d1.service';
 import fs from 'fs/promises';
 import path from 'path';
 
 export class D1DatabaseController {
     constructor(private databaseService: D1DatabaseService) { }
+
+    query = async (req: Request, res: Response) => {
+        try {
+            const { sql, params } = req.body;
+            const result = await this.databaseService.query(sql, params);
+            res.json(result);
+        } catch (error: any) {
+            console.error('D1 query error:', error);
+            res.status(500).json({ error: error.message });
+        }
+    };
 
     runMigration = async (req: Request, res: Response) => {
         try {
@@ -21,17 +32,5 @@ export class D1DatabaseController {
             res.status(500).json({ error: 'Internal server error' });
         }
     }
-
-    runAdvancedQuery = async (req: Request, res: Response) => {
-        try {
-            const { sql, params } = req.body;
-            const result = await this.databaseService.runAdvancedQuery(sql, params);
-            res.status(200).json({ result });
-        } catch (error) {
-            console.error('Error running D1 advanced query:', error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    }
-    // Other D1 database management controller methods...
 }
 

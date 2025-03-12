@@ -46,5 +46,4 @@ function query(sql_1) {
 }
 exports.d1 = {
     query,
-    getD1Client,
 };
