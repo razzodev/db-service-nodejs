@@ -26,8 +26,6 @@ function startServer() {
         try {
             const appRoutes = yield (0, features_1.initializeFeatures)();
             app.use(middleware_1.authMiddleware);
-            app.use('/users/mongodb', appRoutes.mongoUserRoutes);
-            app.use('/users/d1', appRoutes.d1UserRoutes);
             app.use('/mongodb', appRoutes.mongoDatabasesRoutes);
             app.use('/d1', appRoutes.d1DatabasesRoutes);
             app.get('/', (req, res) => __awaiter(this, void 0, void 0, function* () {
