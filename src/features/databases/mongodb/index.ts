@@ -1,4 +1,4 @@
 export { mongodb } from '../../../services/db';
-export { MongoDatabaseService } from './databases.service';
-export { MongoDatabaseController } from './databases.controller';
-export { setupMongoDatabasesRoutes } from './databases.routes';
+export { MongoDatabaseService } from './mongodb.service';
+export { MongoDatabaseController } from './mongodb.controller';
+export { setupMongoDatabasesRoutes } from './mongodb.routes';
