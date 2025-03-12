@@ -15,6 +15,9 @@ export const client = new MongoClient(uri, {
 
 
 export async function connectToDatabase(databaseName: string = ''): Promise<Db> {
+    if (!databaseName) {
+        throw new Error("database name required");
+    }
     try {
         await client.connect();
         db = client.db(databaseName);
