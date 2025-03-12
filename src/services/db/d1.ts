@@ -38,5 +38,4 @@ async function query(
 
 export const d1 = {
     query,
-    getD1Client,
 };

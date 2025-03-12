@@ -2,9 +2,9 @@
 
 import { MongoClient, Db, ServerApiVersion } from 'mongodb';
 
-export const uri = process.env.MONGODB_URI || 'mongodb://user:pass@localhost:27017/mydb'; // Replace with your connection string
+export const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/mydb'; // Replace with your connection string
 
-const client = new MongoClient(uri, {
+export const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
         strict: true,
@@ -12,15 +12,16 @@ const client = new MongoClient(uri, {
     }
 });
 
-function getClient(): MongoClient {
-    return client;
-}
+
 
 export async function connectToDatabase(databaseName: string = ''): Promise<Db> {
+    if (!databaseName) {
+        throw new Error("database name required");
+    }
     try {
         await client.connect();
         db = client.db(databaseName);
-        console.log('Connected to MongoDB');
+        console.log(`Connected to MongoDB database: ${databaseName}`);
         return db;
     } catch (error) {
         console.error('Error connecting to MongoDB:', error);
@@ -49,6 +50,6 @@ const mongodb = {
     connectToDatabase,
     getDb,
     closeDatabaseConnection,
-    getClient
+    client
 };
 export default mongodb
