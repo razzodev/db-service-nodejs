@@ -2,7 +2,10 @@
 
 import { MongoClient, Db, ServerApiVersion } from 'mongodb';
 
-export const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/mydb'; // Replace with your connection string
+export const remoteUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/mydb'; // Replace with your connection string
+export const localUri = process.env.MONGODB_URI_LOCAL || 'mongodb://localhost:27017/mydb';
+const isRemoteUri = true
+const uri = isRemoteUri ? remoteUri : localUri;
 
 export const client = new MongoClient(uri, {
     serverApi: {
