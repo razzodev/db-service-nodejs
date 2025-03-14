@@ -5,18 +5,22 @@ import { Request, Response } from 'express';
 import { D1DatabaseService } from './d1.service';
 import fs from 'fs/promises';
 import path from 'path';
-
+import { isSqlValid } from '../../../commons/middleware';
 export class D1DatabaseController {
     constructor(private databaseService: D1DatabaseService) { }
 
-    query = async (req: Request, res: Response) => {
+    query = async (req: Request, res: Response): Promise<void> => {
         try {
             const { sql, params } = req.body;
-            const result = await this.databaseService.query(sql, params);
-            res.json(result);
+            if (!isSqlValid(sql)) {
+                res.status(400).json({ error: 'SQL syntax error' });
+                return
+            }
+            const result = await this.databaseService.query(sql, params || []);
+            res.status(200).json(result);
         } catch (error: any) {
             console.error('D1 query error:', error);
-            res.status(500).json({ error: error.message });
+            res.status(400).json(error) // Pass error to next middleware
         }
     };
 
