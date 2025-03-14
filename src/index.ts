@@ -4,10 +4,10 @@ config.loadEnvs();
 import express, { Request, Response } from 'express';
 import { mongodb, d1 } from './services/db';
 import { initializeFeatures } from './features'
-import { authMiddleware } from './commons/middleware';
+// import { authMiddleware } from './commons/middleware';
 const app = express();
 const PORT = process.env.PORT || 4000;
-
+import { authMiddleware } from '@razush/fullstasher/server';
 app.use(express.json());
 
 
