@@ -1,8 +1,11 @@
 import { Db, MongoClient, Collection, InsertOneResult, InsertManyResult, DeleteResult, UpdateResult } from 'mongodb';
+import { InMemoryCacheService } from '../../../services/cache';
 
 export class MongoDatabaseService {
-    constructor(private client: MongoClient) { } // Removed db from constructor
-
+    private cacheService: InMemoryCacheService;
+    constructor(private client: MongoClient) {
+        this.cacheService = new InMemoryCacheService();
+    }
     private getDatabase(dbName: string): Db {
         return this.client.db(dbName);
     }
