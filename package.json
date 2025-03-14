@@ -1,42 +1,42 @@
 {
-  "name": "express-sandbox",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/index.ts",
-  "scripts": {
-    "start": "node dist/index.js",
-    "build": "tsc",
-    "dev": "nodemon --exec ts-node src/index.ts",
-    "lint": "eslint 'src/**/*.ts'",
-    "test": "jest --passWithNoTests"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@razush/fullstasher": "^1.1.1",
-    "@types/cloudflare": "^2.7.15",
-    "cloudflare": "^4.1.0",
-    "dotenv": "^16.4.7",
-    "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.14.2",
-    "node-cache": "^5.1.2",
-    "node-fetch": "^3.3.2"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/jest": "^29.5.14",
-    "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.13.4",
-    "@types/supertest": "^6.0.2",
-    "eslint": "^9.21.0",
-    "jest": "^29.7.0",
-    "mongodb-memory-server": "^10.1.4",
-    "nodemon": "^3.1.9",
-    "sql-parser": "^0.5.0",
-    "supertest": "^7.0.0",
-    "ts-jest": "^29.2.6",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
-  }
+    "name": "express-sandbox",
+    "version": "1.0.0",
+    "description": "",
+    "main": "src/index.ts",
+    "scripts": {
+        "start": "node dist/index.js",
+        "build": "tsc",
+        "dev": "nodemon --exec ts-node src/index.ts",
+        "lint": "eslint 'src/**/*.ts'",
+        "test": "jest --passWithNoTests"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@razush/fullstasher": "latest",
+        "@types/cloudflare": "^2.7.15",
+        "cloudflare": "^4.1.0",
+        "dotenv": "^16.4.7",
+        "express": "^4.19.2",
+        "jsonwebtoken": "^9.0.2",
+        "mongodb": "^6.14.2",
+        "node-cache": "^5.1.2",
+        "node-fetch": "^3.3.2"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.0",
+        "@types/jest": "^29.5.14",
+        "@types/jsonwebtoken": "^9.0.9",
+        "@types/node": "^22.13.4",
+        "@types/supertest": "^6.0.2",
+        "eslint": "^9.21.0",
+        "jest": "^29.7.0",
+        "mongodb-memory-server": "^10.1.4",
+        "nodemon": "^3.1.9",
+        "sql-parser": "^0.5.0",
+        "supertest": "^7.0.0",
+        "ts-jest": "^29.2.6",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.7.3"
+    }
 }
