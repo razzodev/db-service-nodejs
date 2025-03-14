@@ -41,14 +41,24 @@ export class MongoDatabaseController {
 
     updateOne = async (req: Request, res: Response) => {
         try {
-            const { database, collection, id, updateDocument } = req.body;
-            const result = await this.databaseService.updateOne(database, collection, { _id: new ObjectId(id) }, { $set: updateDocument });
+            const { database, collection, _id, updateDocument } = req.body;
+            const result = await this.databaseService.updateOne(database, collection, { _id: new ObjectId(_id) }, updateDocument);
             res.json(result);
         } catch (error: any) {
             console.error('MongoDB updateOne error:', error);
             res.status(500).json({ error: error.message });
         }
     };
+    updateMany = async (req: Request, res: Response) => {
+        try {
+            const { database, collection, filter, updateDocument, options } = req.body;
+            const result = await this.databaseService.updateMany(database, collection, filter, updateDocument, options);
+            res.json(result);
+        } catch (error: any) {
+            console.error('MongoDB updateMany error:', error);
+            res.status(500).json({ error: error.message });
+        }
+    }
 
     find = async (req: Request, res: Response) => {
         try {
@@ -56,8 +66,8 @@ export class MongoDatabaseController {
             let result;
             if (query === 'all') {
                 result = await this.databaseService.findAll(database, collection);
-            } else if (query && query.id) {
-                result = await this.databaseService.find(database, collection, { _id: new ObjectId(query.id) });
+            } else if (query && query._id) {
+                result = await this.databaseService.findOne(database, collection, { _id: new ObjectId(query._id) });
             } else {
                 result = await this.databaseService.find(database, collection, query);
             }

@@ -1,4 +1,4 @@
-import { Db, MongoClient, Collection, InsertOneResult, InsertManyResult, DeleteResult, UpdateResult } from 'mongodb';
+import { Db, MongoClient, Collection, InsertOneResult, InsertManyResult, DeleteResult, UpdateResult, UpdateOptions } from 'mongodb';
 import { InMemoryCacheService, getCachedOrExecute } from '../../../services/cache';
 
 export class MongoDatabaseService {
@@ -71,8 +71,8 @@ export class MongoDatabaseService {
         return result;
     }
 
-    updateMany = async (dbName: string, collection: string, filter: any, update: any): Promise<UpdateResult> => {
-        const result = await this.getDatabase(dbName).collection(collection).updateMany(filter, update);
+    updateMany = async (dbName: string, collection: string, filter: any, update: any, options: UpdateOptions = {}): Promise<UpdateResult> => {
+        const result = await this.getDatabase(dbName).collection(collection).updateMany(filter, update, options);
         this.invalidateCacheForUpdate(dbName, collection, filter);
         return result;
     }
