@@ -70,8 +70,8 @@ export class MongoDatabaseController {
 
     updateOne = async (req: Request, res: Response) => {
         try {
-            const { database, collection, _id, updateDocument } = req.body;
-            const result = await this.databaseService.updateOne(database, collection, { _id: new ObjectId(_id) }, updateDocument);
+            const { database, collection, _id, update } = req.body;
+            const result = await this.databaseService.updateOne(database, collection, { _id: new ObjectId(_id) }, update);
             res.status(200).json(result);
         } catch (error: any) {
             console.error('MongoDB updateOne error:', error);
@@ -80,8 +80,8 @@ export class MongoDatabaseController {
     };
     updateMany = async (req: Request, res: Response) => {
         try {
-            const { database, collection, filter, updateDocument, options } = req.body;
-            const result = await this.databaseService.updateMany(database, collection, filter, updateDocument, options);
+            const { database, collection, filter, update, options } = req.body;
+            const result = await this.databaseService.updateMany(database, collection, filter, update, options);
             res.status(200).json(result);
         } catch (error: any) {
             console.error('MongoDB updateMany error:', error);
@@ -103,9 +103,9 @@ export class MongoDatabaseController {
 
     deleteDatabase = async (req: Request, res: Response) => {
         try {
-            const { dbName } = req.params;
-            await this.databaseService.deleteDatabase(dbName);
-            res.status(204).send();
+            const { database } = req.params;
+            await this.databaseService.deleteDatabase(database);
+            res.status(204).json();
         } catch (error) {
             console.error('Error deleting MongoDB database:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -114,9 +114,9 @@ export class MongoDatabaseController {
 
     createCollection = async (req: Request, res: Response) => {
         try {
-            const { dbName, collectionName } = req.body;
-            const collection = await this.databaseService.createCollection(dbName, collectionName);
-            res.status(201).json({ message: `Collection ${collectionName} created`, collectionName: collection.collectionName });
+            const { database, collection } = req.body;
+            const col = await this.databaseService.createCollection(database, collection);
+            res.status(201).json({ message: `Collection ${collection} created`, collectionName: col.collectionName });
         } catch (error) {
             console.error('Error creating MongoDB collection:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -125,9 +125,9 @@ export class MongoDatabaseController {
 
     deleteCollection = async (req: Request, res: Response) => {
         try {
-            const { dbName, collectionName } = req.params;
-            await this.databaseService.deleteCollection(dbName, collectionName);
-            res.status(204).send();
+            const { database, collection } = req.params;
+            await this.databaseService.deleteCollection(database, collection);
+            res.status(204).json();
         } catch (error) {
             console.error('Error deleting MongoDB collection:', error);
             res.status(500).json({ error: 'Internal server error' });
