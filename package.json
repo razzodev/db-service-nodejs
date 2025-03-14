@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@razush/fullstasher": "^1.1.1",
     "@types/cloudflare": "^2.7.15",
     "cloudflare": "^4.1.0",
     "dotenv": "^16.4.7",
