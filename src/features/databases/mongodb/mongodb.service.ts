@@ -3,7 +3,6 @@ import { InMemoryCacheService, getCachedOrExecute } from '../../../services/cach
 
 export class MongoDatabaseService {
     private cacheService: InMemoryCacheService;
-
     constructor(private client: MongoClient) {
         this.cacheService = new InMemoryCacheService();
     }
@@ -16,20 +15,20 @@ export class MongoDatabaseService {
         return this.getDatabase(dbName);
     }
 
-    deleteDatabase = async (dbName: string): Promise<void> => {
+    deleteDatabase = async (dbName: string): Promise<boolean> => {
         const keysToDelete = this.cacheService.getKeys().filter(key => key.startsWith(`${dbName}:`));
         this.cacheService.del(keysToDelete);
-        await this.getDatabase(dbName).dropDatabase();
+        return await this.getDatabase(dbName).dropDatabase();
     }
 
     createCollection = async (dbName: string, collectionName: string): Promise<Collection<Document>> => {
         return this.getDatabase(dbName).createCollection(collectionName);
     }
 
-    deleteCollection = async (dbName: string, collectionName: string): Promise<void> => {
+    deleteCollection = async (dbName: string, collectionName: string): Promise<boolean> => {
         const keysToDelete = this.cacheService.getKeys().filter(key => key.includes(`${dbName}:${collectionName}`));
         this.cacheService.del(keysToDelete);
-        await this.getDatabase(dbName).collection(collectionName).drop();
+        return await this.getDatabase(dbName).collection(collectionName).drop();
     }
 
     find = async (dbName: string, collection: string, query: any): Promise<any[]> => {
@@ -53,7 +52,7 @@ export class MongoDatabaseService {
         );
     }
 
-    insertOne = async (dbName: string, collection: string, document: any): Promise<InsertOneResult> => {
+    insertOne = async (dbName: string, collection: string, document: any): Promise<InsertOneResult<Document>> => {
         const result = await this.getDatabase(dbName).collection(collection).insertOne(document);
         this.invalidateCache(dbName, collection);
         return result;
