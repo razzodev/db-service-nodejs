@@ -14,7 +14,7 @@ export function setupMongoDatabasesRoutes(controller: MongoDatabaseController) {
     router.post('/createDatabase', controller.createDatabase);
     router.delete('/deleteDatabase/:dbName', controller.deleteDatabase);
     router.post('/createCollection', controller.createCollection);
-    router.delete('/deleteCollection/:dbName/:collectionName', controller.deleteCollection);
+    router.delete('/deleteCollection/:database/:collection', controller.deleteCollection);
     return router;
 }
 
