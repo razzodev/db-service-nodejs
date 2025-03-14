@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+//@ts-ignore
+import sqlParser from 'sql-parser';
 export const validateParam = (params: string[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
         for (const param of params) {
@@ -42,5 +44,16 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
     } catch (error) {
         res.status(403).json({ message: 'Invalid token' });
         return
+    }
+}
+
+
+export function isSqlValid(sqlString: string) {
+    try {
+        sqlParser.parse(sqlString);
+        return true; // Parsing successful, SQL is valid
+    } catch (error) {
+        console.error("SQL PARSER ERROR: ", error);
+        return false; // Parsing failed, SQL is invalid
     }
 }

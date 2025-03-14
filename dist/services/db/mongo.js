@@ -10,13 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.client = exports.uri = void 0;
+exports.client = exports.localUri = exports.remoteUri = void 0;
 exports.connectToDatabase = connectToDatabase;
 exports.getDb = getDb;
 exports.closeDatabaseConnection = closeDatabaseConnection;
 const mongodb_1 = require("mongodb");
-exports.uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/mydb'; // Replace with your connection string
-exports.client = new mongodb_1.MongoClient(exports.uri, {
+exports.remoteUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/mydb'; // Replace with your connection string
+exports.localUri = process.env.MONGODB_URI_LOCAL || 'mongodb://localhost:27017/mydb';
+const isRemoteUri = true;
+const uri = isRemoteUri ? exports.remoteUri : exports.localUri;
+exports.client = new mongodb_1.MongoClient(uri, {
     serverApi: {
         version: mongodb_1.ServerApiVersion.v1,
         strict: true,

@@ -9,11 +9,12 @@ export function setupMongoDatabasesRoutes(controller: MongoDatabaseController) {
     router.post('/insertMany', controller.insertMany);
     router.post('/deleteOne', controller.deleteOne);
     router.post('/updateOne', controller.updateOne);
+    router.post('/updateMany', controller.updateMany);
     router.post('/find', controller.find);
     router.post('/createDatabase', controller.createDatabase);
-    router.delete('/deleteDatabase/:dbName', controller.deleteDatabase);
+    router.delete('/deleteDatabase/:database', controller.deleteDatabase);
     router.post('/createCollection', controller.createCollection);
-    router.delete('/deleteCollection/:dbName/:collectionName', controller.deleteCollection);
+    router.delete('/deleteCollection/:database/:collection', controller.deleteCollection);
     return router;
 }
 

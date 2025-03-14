@@ -1,7 +1,11 @@
-import { Db, MongoClient, Collection, InsertOneResult, InsertManyResult, DeleteResult, UpdateResult } from 'mongodb';
+import { Db, MongoClient, Collection, InsertOneResult, InsertManyResult, DeleteResult, UpdateResult, UpdateOptions } from 'mongodb';
+import { InMemoryCacheService, getCachedOrExecute } from '../../../services/cache';
 
 export class MongoDatabaseService {
-    constructor(private client: MongoClient) { } // Removed db from constructor
+    private cacheService: InMemoryCacheService;
+    constructor(private client: MongoClient) {
+        this.cacheService = new InMemoryCacheService();
+    }
 
     private getDatabase(dbName: string): Db {
         return this.client.db(dbName);
@@ -11,43 +15,99 @@ export class MongoDatabaseService {
         return this.getDatabase(dbName);
     }
 
-    deleteDatabase = async (dbName: string): Promise<void> => {
-        await this.getDatabase(dbName).dropDatabase();
+    deleteDatabase = async (dbName: string): Promise<boolean> => {
+        const keysToDelete = this.cacheService.getKeys().filter(key => key.startsWith(`${dbName}:`));
+        this.cacheService.del(keysToDelete);
+        return await this.getDatabase(dbName).dropDatabase();
     }
 
     createCollection = async (dbName: string, collectionName: string): Promise<Collection<Document>> => {
         return this.getDatabase(dbName).createCollection(collectionName);
     }
 
-    deleteCollection = async (dbName: string, collectionName: string): Promise<void> => {
-        await this.getDatabase(dbName).collection(collectionName).drop();
+    deleteCollection = async (dbName: string, collectionName: string): Promise<boolean> => {
+        const keysToDelete = this.cacheService.getKeys().filter(key => key.includes(`${dbName}:${collectionName}`));
+        this.cacheService.del(keysToDelete);
+        return await this.getDatabase(dbName).collection(collectionName).drop();
     }
 
     find = async (dbName: string, collection: string, query: any): Promise<any[]> => {
-        return this.getDatabase(dbName).collection(collection).find(query).toArray();
+        const cacheKey = `find:${dbName}:${collection}:${JSON.stringify(query)}`;
+        return getCachedOrExecute(this.cacheService, cacheKey, () =>
+            this.getDatabase(dbName).collection(collection).find(query).toArray()
+        );
     }
 
     findAll = async (dbName: string, collection: string): Promise<any[]> => {
-        return this.getDatabase(dbName).collection(collection).find({}).toArray();
+        const cacheKey = `findAll:${dbName}:${collection}`;
+        return getCachedOrExecute(this.cacheService, cacheKey, () =>
+            this.getDatabase(dbName).collection(collection).find({}).toArray()
+        );
     }
 
     findOne = async (dbName: string, collection: string, query: any): Promise<any> => {
-        return this.getDatabase(dbName).collection(collection).findOne(query);
+        const cacheKey = `findOne:${dbName}:${collection}:${JSON.stringify(query)}`;
+        return getCachedOrExecute(this.cacheService, cacheKey, () =>
+            this.getDatabase(dbName).collection(collection).findOne(query)
+        );
     }
 
-    insertOne = async (dbName: string, collection: string, document: any): Promise<InsertOneResult> => {
-        return this.getDatabase(dbName).collection(collection).insertOne(document);
+    insertOne = async (dbName: string, collection: string, document: any): Promise<InsertOneResult<Document>> => {
+        const result = await this.getDatabase(dbName).collection(collection).insertOne(document);
+        this.invalidateCache(dbName, collection);
+        return result;
     }
 
     insertMany = async (dbName: string, collection: string, documents: any[]): Promise<InsertManyResult> => {
-        return this.getDatabase(dbName).collection(collection).insertMany(documents);
+        const result = await this.getDatabase(dbName).collection(collection).insertMany(documents);
+        this.invalidateCache(dbName, collection);
+        return result;
     }
 
     updateOne = async (dbName: string, collection: string, filter: any, update: any): Promise<UpdateResult> => {
-        return this.getDatabase(dbName).collection(collection).updateOne(filter, update);
+        const result = await this.getDatabase(dbName).collection(collection).updateOne(filter, update);
+        this.invalidateCacheForUpdate(dbName, collection, filter);
+        return result;
+    }
+
+    updateMany = async (dbName: string, collection: string, filter: any, update: any, options: UpdateOptions = {}): Promise<UpdateResult> => {
+        const result = await this.getDatabase(dbName).collection(collection).updateMany(filter, update, options);
+        this.invalidateCacheForUpdate(dbName, collection, filter);
+        return result;
     }
 
     deleteOne = async (dbName: string, collection: string, filter: any): Promise<DeleteResult> => {
-        return this.getDatabase(dbName).collection(collection).deleteOne(filter);
+        const result = await this.getDatabase(dbName).collection(collection).deleteOne(filter);
+        this.invalidateCacheForDelete(dbName, collection, filter);
+        return result;
+    }
+
+    deleteMany = async (dbName: string, collection: string, filter: any): Promise<DeleteResult> => {
+        const result = await this.getDatabase(dbName).collection(collection).deleteMany(filter);
+        this.invalidateCacheForDelete(dbName, collection, filter);
+        return result;
+    }
+
+    private invalidateCache = (dbName: string, collection: string): void => {
+        const keysToDelete = this.cacheService.getKeys().filter(key => key.includes(`${dbName}:${collection}`));
+        this.cacheService.del(keysToDelete);
+    }
+
+    private invalidateCacheForUpdate = (dbName: string, collection: string, filter: any): void => {
+        const keysToDelete = [
+            `findOne:${dbName}:${collection}:${JSON.stringify(filter)}`,
+            `find:${dbName}:${collection}:${JSON.stringify(filter)}`,
+            `findAll:${dbName}:${collection}`
+        ];
+        this.cacheService.del(keysToDelete);
+    }
+
+    private invalidateCacheForDelete = (dbName: string, collection: string, filter: any): void => {
+        const keysToDelete = [
+            `findOne:${dbName}:${collection}:${JSON.stringify(filter)}`,
+            `find:${dbName}:${collection}:${JSON.stringify(filter)}`,
+            `findAll:${dbName}:${collection}`
+        ];
+        this.cacheService.del(keysToDelete);
     }
 }

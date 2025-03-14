@@ -5,7 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateParam = void 0;
 exports.authMiddleware = authMiddleware;
+exports.isSqlValid = isSqlValid;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+//@ts-ignore
+const sql_parser_1 = __importDefault(require("sql-parser"));
 const validateParam = (params) => {
     return (req, res, next) => {
         for (const param of params) {
@@ -39,5 +42,15 @@ function authMiddleware(req, res, next) {
     catch (error) {
         res.status(403).json({ message: 'Invalid token' });
         return;
+    }
+}
+function isSqlValid(sqlString) {
+    try {
+        sql_parser_1.default.parse(sqlString);
+        return true; // Parsing successful, SQL is valid
+    }
+    catch (error) {
+        console.error("SQL PARSER ERROR: ", error);
+        return false; // Parsing failed, SQL is invalid
     }
 }
