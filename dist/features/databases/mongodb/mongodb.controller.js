@@ -14,11 +14,53 @@ const mongodb_1 = require("mongodb");
 class MongoDatabaseController {
     constructor(databaseService) {
         this.databaseService = databaseService;
+        this.find = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { database, collection, query } = req.body;
+                let result;
+                if (query === 'all') {
+                    result = yield this.databaseService.findAll(database, collection);
+                }
+                else if (query && query._id) {
+                    result = yield this.databaseService.findOne(database, collection, { _id: new mongodb_1.ObjectId(query._id) });
+                }
+                else {
+                    result = yield this.databaseService.find(database, collection, query);
+                }
+                res.status(200).json(result);
+            }
+            catch (error) {
+                console.error('MongoDB find error:', error);
+                res.status(500).json({ error: error.message });
+            }
+        });
+        this.deleteOne = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { database, collection, id } = req.body;
+                const result = yield this.databaseService.deleteOne(database, collection, { _id: new mongodb_1.ObjectId(id) });
+                res.status(200).json(result);
+            }
+            catch (error) {
+                console.error('MongoDB deleteOne error:', error);
+                res.status(500).json({ error: error.message });
+            }
+        });
+        this.deleteMany = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { database, collection, filter } = req.body;
+                const result = yield this.databaseService.deleteMany(database, collection, filter);
+                res.status(200).json(result);
+            }
+            catch (error) {
+                console.error('MongoDB deleteMany error:', error);
+                res.status(500).json({ error: error.message });
+            }
+        });
         this.insertOne = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { database, collection, document } = req.body;
                 const result = yield this.databaseService.insertOne(database, collection, document);
-                res.json(result);
+                res.status(201).json(result);
             }
             catch (error) {
                 console.error('MongoDB insertOne error:', error);
@@ -29,60 +71,40 @@ class MongoDatabaseController {
             try {
                 const { database, collection, documents } = req.body;
                 const result = yield this.databaseService.insertMany(database, collection, documents);
-                res.json(result);
+                res.status(201).json(result);
             }
             catch (error) {
                 console.error('MongoDB insertMany error:', error);
                 res.status(500).json({ error: error.message });
             }
         });
-        this.deleteOne = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { database, collection, id } = req.body;
-                const result = yield this.databaseService.deleteOne(database, collection, { _id: new mongodb_1.ObjectId(id) });
-                res.json(result);
-            }
-            catch (error) {
-                console.error('MongoDB deleteOne error:', error);
-                res.status(500).json({ error: error.message });
-            }
-        });
         this.updateOne = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { database, collection, id, updateDocument } = req.body;
-                const result = yield this.databaseService.updateOne(database, collection, { _id: new mongodb_1.ObjectId(id) }, { $set: updateDocument });
-                res.json(result);
+                const { database, collection, _id, update } = req.body;
+                const result = yield this.databaseService.updateOne(database, collection, { _id: new mongodb_1.ObjectId(_id) }, update);
+                res.status(200).json(result);
             }
             catch (error) {
                 console.error('MongoDB updateOne error:', error);
                 res.status(500).json({ error: error.message });
             }
         });
-        this.find = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.updateMany = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { database, collection, query } = req.body;
-                let result;
-                if (query === 'all') {
-                    result = yield this.databaseService.findAll(database, collection);
-                }
-                else if (query && query.id) {
-                    result = yield this.databaseService.find(database, collection, { _id: new mongodb_1.ObjectId(query.id) });
-                }
-                else {
-                    result = yield this.databaseService.find(database, collection, query);
-                }
-                res.json(result);
+                const { database, collection, filter, update, options } = req.body;
+                const result = yield this.databaseService.updateMany(database, collection, filter, update, options);
+                res.status(200).json(result);
             }
             catch (error) {
-                console.error('MongoDB find error:', error);
+                console.error('MongoDB updateMany error:', error);
                 res.status(500).json({ error: error.message });
             }
         });
         this.createDatabase = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { dbName } = req.body;
-                const db = yield this.databaseService.createDatabase(dbName);
-                res.status(201).json({ message: `Database ${dbName} created`, dbName: db.databaseName });
+                const { database } = req.body;
+                const db = yield this.databaseService.createDatabase(database);
+                res.status(201).json({ message: `Database ${database} created`, dbName: db.databaseName });
             }
             catch (error) {
                 console.error('Error creating MongoDB database:', error);
@@ -91,9 +113,9 @@ class MongoDatabaseController {
         });
         this.deleteDatabase = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { dbName } = req.params;
-                yield this.databaseService.deleteDatabase(dbName);
-                res.status(204).send();
+                const { database } = req.params;
+                yield this.databaseService.deleteDatabase(database);
+                res.status(204).json();
             }
             catch (error) {
                 console.error('Error deleting MongoDB database:', error);
@@ -102,9 +124,9 @@ class MongoDatabaseController {
         });
         this.createCollection = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { dbName, collectionName } = req.body;
-                const collection = yield this.databaseService.createCollection(dbName, collectionName);
-                res.status(201).json({ message: `Collection ${collectionName} created`, collectionName: collection.collectionName });
+                const { database, collection } = req.body;
+                const col = yield this.databaseService.createCollection(database, collection);
+                res.status(201).json({ message: `Collection ${collection} created`, collectionName: col.collectionName });
             }
             catch (error) {
                 console.error('Error creating MongoDB collection:', error);
@@ -113,9 +135,9 @@ class MongoDatabaseController {
         });
         this.deleteCollection = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { dbName, collectionName } = req.params;
-                yield this.databaseService.deleteCollection(dbName, collectionName);
-                res.status(204).send();
+                const { database, collection } = req.params;
+                yield this.databaseService.deleteCollection(database, collection);
+                res.status(204).json();
             }
             catch (error) {
                 console.error('Error deleting MongoDB collection:', error);

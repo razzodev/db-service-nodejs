@@ -15,18 +15,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.D1DatabaseController = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
+const middleware_1 = require("../../../commons/middleware");
 class D1DatabaseController {
     constructor(databaseService) {
         this.databaseService = databaseService;
         this.query = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { sql, params } = req.body;
-                const result = yield this.databaseService.query(sql, params);
-                res.json(result);
+                if (!(0, middleware_1.isSqlValid)(sql)) {
+                    res.status(400).json({ error: 'SQL syntax error' });
+                    return;
+                }
+                const result = yield this.databaseService.query(sql, params || []);
+                res.status(200).json(result);
             }
             catch (error) {
                 console.error('D1 query error:', error);
-                res.status(500).json({ error: error.message });
+                res.status(400).json(error); // Pass error to next middleware
             }
         });
         this.runMigration = (req, res) => __awaiter(this, void 0, void 0, function* () {
