@@ -22,4 +22,8 @@ export class InMemoryCacheService {
     flush(): void {
         this.cache.flushAll();
     }
+
+    getKeys(): string[] {
+        return this.cache.keys();
+    }
 }
