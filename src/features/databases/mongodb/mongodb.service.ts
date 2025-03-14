@@ -51,7 +51,7 @@ export class MongoDatabaseService {
     }
 
     insertOne = async (dbName: string, collection: string, document: any): Promise<InsertOneResult> => {
-        this.cacheService.del([`findAll:${dbName}:${collection}`]);
+        this.cacheService.del([`findOne:${dbName}:${collection}`]);
         return this.getDatabase(dbName).collection(collection).insertOne(document);
     }
 
