@@ -92,9 +92,9 @@ export class MongoDatabaseController {
 
     createDatabase = async (req: Request, res: Response) => {
         try {
-            const { dbName } = req.body;
-            const db = await this.databaseService.createDatabase(dbName);
-            res.status(201).json({ message: `Database ${dbName} created`, dbName: db.databaseName });
+            const { database } = req.body;
+            const db = await this.databaseService.createDatabase(database);
+            res.status(201).json({ message: `Database ${database} created`, dbName: db.databaseName });
         } catch (error) {
             console.error('Error creating MongoDB database:', error);
             res.status(500).json({ error: 'Internal server error' });

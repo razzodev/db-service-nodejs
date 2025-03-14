@@ -126,7 +126,7 @@ describe('MongoDB Routes', () => {
         it('should create a database', async () => {
             const res = await request(app)
                 .post('/createDatabase')
-                .send({ dbName: 'newdb' });
+                .send({ database: 'newdb' });
             expect(res.statusCode).toBe(201);
             expect(res.body.message).toBe('Database newdb created');
         });

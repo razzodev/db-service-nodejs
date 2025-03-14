@@ -140,21 +140,23 @@ describe('MongoDatabaseController', () => {
 
     describe('deleteDatabase', () => {
         it('should delete a database', async () => {
-            req.params = { database: 'testdb' };
+            req.params = { database: 'testdb1' };
+            await controller.createDatabase(req as Request, res as Response);
             await controller.deleteDatabase(req as Request, res as Response);
             expect(resStatus).toHaveBeenCalledWith(204);
             expect(resJson).toHaveBeenCalled();
         });
     });
 
-    describe('createCollection / deleteCollection', () => {
+    describe('createCollection', () => {
         it('should create a collection', async () => {
             req.body = { database: 'testdb', collection: 'testcollection1' };
             await controller.createCollection(req as Request, res as Response);
             expect(resStatus).toHaveBeenCalledWith(201);
             expect(resJson).toHaveBeenCalled();
         });
-
+    });
+    describe('deleteCollection', () => {
         it('should delete a collection', async () => {
             req.params = { database: 'testdb', collection: 'testcollection1' };
             await controller.deleteCollection(req as Request, res as Response);
@@ -162,5 +164,4 @@ describe('MongoDatabaseController', () => {
             expect(resJson).toHaveBeenCalled();
         });
     });
-
 });
