@@ -6,6 +6,45 @@ import { ObjectId } from 'mongodb';
 export class MongoDatabaseController {
     constructor(private databaseService: MongoDatabaseService) { }
 
+    find = async (req: Request, res: Response) => {
+        try {
+            const { database, collection, query } = req.body;
+            let result;
+            if (query === 'all') {
+                result = await this.databaseService.findAll(database, collection);
+            } else if (query && query._id) {
+                result = await this.databaseService.findOne(database, collection, { _id: new ObjectId(query._id) });
+            } else {
+                result = await this.databaseService.find(database, collection, query);
+            }
+            res.status(200).json(result);
+        } catch (error: any) {
+            console.error('MongoDB find error:', error);
+            res.status(500).json({ error: error.message });
+        }
+    };
+
+    deleteOne = async (req: Request, res: Response) => {
+        try {
+            const { database, collection, id } = req.body;
+            const result = await this.databaseService.deleteOne(database, collection, { _id: new ObjectId(id) });
+            res.status(200).json(result);
+        } catch (error: any) {
+            console.error('MongoDB deleteOne error:', error);
+            res.status(500).json({ error: error.message });
+        }
+    };
+
+    deleteMany = async (req: Request, res: Response) => {
+        try {
+            const { database, collection, filter } = req.body;
+            const result = await this.databaseService.deleteMany(database, collection, filter);
+            res.status(200).json(result);
+        } catch (error: any) {
+            console.error('MongoDB deleteMany error:', error);
+            res.status(500).json({ error: error.message });
+        }
+    }
     insertOne = async (req: Request, res: Response) => {
         try {
             const { database, collection, document } = req.body;
@@ -28,26 +67,6 @@ export class MongoDatabaseController {
         }
     };
 
-    deleteOne = async (req: Request, res: Response) => {
-        try {
-            const { database, collection, id } = req.body;
-            const result = await this.databaseService.deleteOne(database, collection, { _id: new ObjectId(id) });
-            res.status(200).json(result);
-        } catch (error: any) {
-            console.error('MongoDB deleteOne error:', error);
-            res.status(500).json({ error: error.message });
-        }
-    };
-    deleteMany = async (req: Request, res: Response) => {
-        try {
-            const { database, collection, filter } = req.body;
-            const result = await this.databaseService.deleteMany(database, collection, filter);
-            res.status(200).json(result);
-        } catch (error: any) {
-            console.error('MongoDB deleteMany error:', error);
-            res.status(500).json({ error: error.message });
-        }
-    }
 
     updateOne = async (req: Request, res: Response) => {
         try {
@@ -70,23 +89,6 @@ export class MongoDatabaseController {
         }
     }
 
-    find = async (req: Request, res: Response) => {
-        try {
-            const { database, collection, query } = req.body;
-            let result;
-            if (query === 'all') {
-                result = await this.databaseService.findAll(database, collection);
-            } else if (query && query._id) {
-                result = await this.databaseService.findOne(database, collection, { _id: new ObjectId(query._id) });
-            } else {
-                result = await this.databaseService.find(database, collection, query);
-            }
-            res.status(200).json(result);
-        } catch (error: any) {
-            console.error('MongoDB find error:', error);
-            res.status(500).json({ error: error.message });
-        }
-    };
 
     createDatabase = async (req: Request, res: Response) => {
         try {
