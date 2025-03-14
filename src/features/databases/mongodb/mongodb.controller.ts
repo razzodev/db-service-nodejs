@@ -10,7 +10,7 @@ export class MongoDatabaseController {
         try {
             const { database, collection, document } = req.body;
             const result = await this.databaseService.insertOne(database, collection, document);
-            res.json(result);
+            res.status(201).json(result);
         } catch (error: any) {
             console.error('MongoDB insertOne error:', error);
             res.status(500).json({ error: error.message });
@@ -21,7 +21,7 @@ export class MongoDatabaseController {
         try {
             const { database, collection, documents } = req.body;
             const result = await this.databaseService.insertMany(database, collection, documents);
-            res.json(result);
+            res.status(201).json(result);
         } catch (error: any) {
             console.error('MongoDB insertMany error:', error);
             res.status(500).json({ error: error.message });
@@ -32,18 +32,28 @@ export class MongoDatabaseController {
         try {
             const { database, collection, id } = req.body;
             const result = await this.databaseService.deleteOne(database, collection, { _id: new ObjectId(id) });
-            res.json(result);
+            res.status(200).json(result);
         } catch (error: any) {
             console.error('MongoDB deleteOne error:', error);
             res.status(500).json({ error: error.message });
         }
     };
+    deleteMany = async (req: Request, res: Response) => {
+        try {
+            const { database, collection, filter } = req.body;
+            const result = await this.databaseService.deleteMany(database, collection, filter);
+            res.status(200).json(result);
+        } catch (error: any) {
+            console.error('MongoDB deleteMany error:', error);
+            res.status(500).json({ error: error.message });
+        }
+    }
 
     updateOne = async (req: Request, res: Response) => {
         try {
             const { database, collection, _id, updateDocument } = req.body;
             const result = await this.databaseService.updateOne(database, collection, { _id: new ObjectId(_id) }, updateDocument);
-            res.json(result);
+            res.status(200).json(result);
         } catch (error: any) {
             console.error('MongoDB updateOne error:', error);
             res.status(500).json({ error: error.message });
@@ -53,7 +63,7 @@ export class MongoDatabaseController {
         try {
             const { database, collection, filter, updateDocument, options } = req.body;
             const result = await this.databaseService.updateMany(database, collection, filter, updateDocument, options);
-            res.json(result);
+            res.status(200).json(result);
         } catch (error: any) {
             console.error('MongoDB updateMany error:', error);
             res.status(500).json({ error: error.message });
@@ -71,7 +81,7 @@ export class MongoDatabaseController {
             } else {
                 result = await this.databaseService.find(database, collection, query);
             }
-            res.json(result);
+            res.status(200).json(result);
         } catch (error: any) {
             console.error('MongoDB find error:', error);
             res.status(500).json({ error: error.message });
